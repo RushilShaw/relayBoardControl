@@ -1,50 +1,50 @@
 import sys
+import serial
 import relayController
 
-
+PORT = "COM4"
+BAUD = 158200
 NUM_RELAY_PORTS = 4
 function_dict = {
-        "ON": relayController.relay_on,
-        "OFF": relayController.relay_off,
-        "TOGGLE": relayController.relay_toggle,
-        "STATUS": relayController.get_relay_state,
+        "ON": relayController.RelayController.turn_on_relay_by_index,
+        "OFF": relayController.RelayController.turn_off_relay_by_index,
+        "TOGGLE": relayController.RelayController.toggle_relay_by_index,
+        "STATUS": relayController.RelayController.get_relay_status_by_index,
+        "START_TIMER": relayController.RelayController.start_relay_timer
     }
 
 
 def validate_inputs(arguments: list[str]) -> (int, str):
-    invalid_number_of_arguments_msg = "Must have two and only two arguments.\n"
-    invalid_first_argument_msg = "The first argument must be the which port on the relay controller. " \
-                                 "Starting at 1 thru NUM_RELAY_PORTS\n"
-    invalid_second_argument_msg = "The second argument is the command on the port specified in the first argument. " \
-                                  f"Valid commands include: [{' '.join(function_dict.keys())}]\n"
+    invalid_number_of_arguments_msg = "Must have at least two arguments. \n"
+    invalid_first_argument_msg = "The first argument is the command that is sent to the relay board. " \
+                                 f"Valid commands include: [{' '.join(function_dict.keys())}]\n"
+    invalid_second_argument_msg = "The second argument must be the which port on the relay controller. " \
+                                  "This number must be between 1 and NUM_RELAY_PORTS\n"
 
     error_msg = ""
-    if len(arguments) != 3:
+    if len(arguments) < 3:
         error_msg = invalid_number_of_arguments_msg + invalid_first_argument_msg + invalid_second_argument_msg
     else:
-        if not arguments[1].isnumeric() or not (0 < int(arguments[1]) <= relayController.NUM_RELAY_PORTS):
-            error_msg += invalid_first_argument_msg
-        if arguments[2] not in function_dict.keys():
+        if arguments[1] not in function_dict.keys():
             error_msg += invalid_second_argument_msg
+        if not arguments[2].isnumeric() or not (0 < int(arguments[2]) <= NUM_RELAY_PORTS):
+            error_msg += invalid_first_argument_msg
 
     if error_msg:
         raise ValueError(error_msg)
 
-    return int(arguments[1]), arguments[2]
+    return arguments[1], int(arguments[2]), arguments[3:]
 
 
 def main():
-    relay_number, command = validate_inputs(sys.argv)
+    command, relay_number, args = validate_inputs(sys.argv)
     function = function_dict[command]
-    response = function(relay_number)
-    if response is False or response == -1:
-        raise ConnectionRefusedError(f"{function.__name__} returned a response that was not okay")
-    if command == "STATUS":
-        print(response)
-
-
-
-
+    with serial.Serial(port=PORT, baudrate=BAUD) as combus:
+        relay_controller = relayController.RelayController(combus=combus)
+        if command == "START_TIMER":
+            response = function(relay_controller, relay_number, hours=0, minutes=0, seconds=35, relay=relay_number)
+        else:
+            response = function(relay_controller, relay_number, *args)
 
 
 if __name__ == '__main__':
