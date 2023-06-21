@@ -3,10 +3,14 @@ class RelayController:
     This code was copied from
     https://github.com/ncd-io/Industrial-Relay-Control/blob/master/ncd_industrial_relay.py#L138
     The codebase was MIT Licensed
+    The only changes made were the addition of the keep_led_on
     """
     def __init__(self, combus, kwargs = {}):
         self.__dict__.update(kwargs)
         self.renew_replace_interface(combus)
+
+    def keep_led_on(self, relay):
+        self.start_relay_timer(timer=relay, hours=0, minutes=0, seconds=31, relay=relay)
 
     def test_comms(self):
         command = self.wrap_in_api([254, 33])
