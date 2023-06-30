@@ -20,4 +20,8 @@ KEEP_LED_ON - sets the timer and the relay on for 31 seconds
 
 main.py [function_name] [relay_number]
 
+Example: 
+
+main.py TOGGLE 1
+
 returns the output of the function including a success/fail indicator 

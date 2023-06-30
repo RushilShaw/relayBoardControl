@@ -2,9 +2,9 @@ import sys
 import serial
 import relayController
 
-PORT = "COM4"
+PORT = "COM14"
 BAUD = 115200
-NUM_RELAY_PORTS = 4
+NUM_RELAY_PORTS = 16
 function_dict = {
         "ON": relayController.RelayController.turn_on_relay_by_index,
         "OFF": relayController.RelayController.turn_off_relay_by_index,
@@ -14,7 +14,7 @@ function_dict = {
     }
 
 
-def validate_inputs(arguments: list[str]) -> (int, str):
+def validate_inputs(arguments: list[str]) -> (str, int):
     invalid_number_of_arguments_msg = "This program must be run with two command line arguments. \n"
     invalid_first_argument_msg = "The first argument is the command that is sent to the relay board. " \
                                  f"Valid commands include: [{' '.join(function_dict.keys())}]\n"
@@ -22,13 +22,13 @@ def validate_inputs(arguments: list[str]) -> (int, str):
                                   "This number must be between 1 and NUM_RELAY_PORTS\n"
 
     error_msg = ""
-    if len(arguments) < 3:
+    if len(arguments) != 3:
         error_msg = invalid_number_of_arguments_msg + invalid_first_argument_msg + invalid_second_argument_msg
     else:
         if arguments[1] not in function_dict.keys():
-            error_msg += invalid_second_argument_msg
-        if not arguments[2].isnumeric() or not (0 < int(arguments[2]) <= NUM_RELAY_PORTS):
             error_msg += invalid_first_argument_msg
+        if not arguments[2].isnumeric() or not (0 < int(arguments[2]) <= NUM_RELAY_PORTS):
+            error_msg += invalid_second_argument_msg
 
     if error_msg:
         raise ValueError(error_msg)
