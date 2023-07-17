@@ -6,8 +6,8 @@ import relayController
 
 USE_ETHERNET_INSTEAD_OF_USB = True
 COM_PORT = "COM14"
-IP_ADDRESS = "169.254.92.38"
-PORT = 8080
+IP_ADDRESS = "192.168.11.1"
+PORT = 2101
 BAUD = 115200
 NUM_RELAY_PORTS = 16
 command_to_function = {
@@ -47,7 +47,9 @@ def main():
 
     if USE_ETHERNET_INSTEAD_OF_USB:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        communication_method = sock.connect((IP_ADDRESS, PORT))
+        sock.connect((IP_ADDRESS, PORT))
+        sock.settimeout(0.5)
+        communication_method = sock
     else:
         communication_method = serial.Serial(port=COM_PORT, baudrate=BAUD)
 
