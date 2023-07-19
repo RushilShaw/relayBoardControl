@@ -10,7 +10,7 @@ class RelayController:
         self.renew_replace_interface(combus)
 
     def keep_led_on(self, relay):
-        self.start_relay_timer(timer=relay, hours=0, minutes=0, seconds=31, relay=relay)
+        self.start_relay_timer(timer=relay, hours=0, minutes=0, seconds=35, relay=relay)
 
     def test_comms(self):
         command = self.wrap_in_api([254, 33])

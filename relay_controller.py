@@ -5,9 +5,9 @@ import relayController
 
 
 USE_ETHERNET_INSTEAD_OF_USB = True
-COM_PORT = "COM14"
 IP_ADDRESS = "192.168.11.1"
 PORT = 2101
+COM_PORT = "COM14"
 BAUD = 115200
 NUM_RELAY_PORTS = 16
 command_to_function = {
