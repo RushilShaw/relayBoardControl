@@ -11,7 +11,7 @@ This code allows you to control a relay board either through USB or Ethernet com
 
 1. Make sure the relay board is connected.
 2. Install the required libraries by running the following command:
-   ```
+   ```bash
    pip install pyserial
    ```
    (Only required if using USB communication)
@@ -20,7 +20,7 @@ This code allows you to control a relay board either through USB or Ethernet com
 
 To use the relay controller, run the following command:
 
-```
+```bash
 python relay_controller.py <command> <relay_number>
 ```
 
@@ -49,19 +49,18 @@ The behavior of the relay controller can be configured by modifying the followin
 
 - To turn on relay number 3 using USB communication:
 
-  ```
+  ```bash
   python relay_controller.py ON 3
   ```
 
 - To toggle the state of relay number 2 using Ethernet communication:
 
-  ```
+  ```bash
   python relay_controller.py TOGGLE 2
   ```
 
 - To get the status of relay number 1 using USB communication:
 
-  ```
+  ```bash
   python relay_controller.py STATUS 1
   ```
-  The result of 0 for OFF or 1 for ON is printed to console. To redirect to file put `>> [filename].txt` at the end
